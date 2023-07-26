@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import Axios from "axios";
 import { useInfiniteQuery } from "react-query";
