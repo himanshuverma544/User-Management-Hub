@@ -7,7 +7,7 @@ import { Row, Col } from "reactstrap";
 import ReactPaginate from "react-paginate";
 
 import UsersTable from "../components/UsersTable";
-import UsersDivision from "../components/UsersDivison";
+import UsersDivision from "../components/UsersDivision";
 
 const AllUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);

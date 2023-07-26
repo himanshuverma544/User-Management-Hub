@@ -1,4 +1,4 @@
-import UsersDivision from "../components/UsersDivison";
+import UsersDivision from "../components/UsersDivision";
 
 const SelectedUsers = () => {
   return <UsersDivision />;
