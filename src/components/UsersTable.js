@@ -66,7 +66,6 @@ const UsersTable = ({ usersData }) => {
                 >
                   Default
                 </Button>
-                {console.log(userData.id)}
                 <Button
                   className={`admin-btn-${userData.id}`}
                   data-id={userData.id}
