@@ -4,9 +4,9 @@ import Axios from "axios";
 import { useInfiniteQuery } from "react-query";
 
 import { Row, Col } from "reactstrap";
-import ReactPaginate from "react-paginate";
 
 import UsersTable from "../components/UsersTable";
+import Paginate from "../components/Paginate";
 import UsersDivision from "../components/UsersDivision";
 
 const AllUsers = () => {
@@ -30,16 +30,30 @@ const AllUsers = () => {
 
   const {
     data,
-    isSuccess
-    // hasNextPage,
-    // fetchNextPage,
-    // isFetchingNextPage,
+    isSuccess,
+    hasPreviousPage,
+    fetchPreviousPage,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["users", currentPage],
-    queryFn: ({ pageParam = currentPage }) => fetchUsers(pageParam)
-    // getNextPageParam: lastPage => lastPage.data.length ? lastPage.currPage + 1 : undefined,
-    // getPreviousPageParam: lastPage => !lastPage.data.length ? undefined : lastPage.currPage - 1
+    queryFn: ({ pageParam = currentPage }) => fetchUsers(pageParam),
+    getPreviousPageParam: lastPage => !lastPage.data.length ? undefined : lastPage.currPage - 1,
+    getNextPageParam: lastPage => lastPage.data.length ? lastPage.currPage + 1 : undefined
   });
+
+  const fetchThePrevPage = useCallback(() => {
+    if (hasPreviousPage) {
+      fetchPreviousPage();
+    }
+  }, [hasPreviousPage, fetchPreviousPage]);
+
+  const fetchTheNextPage = useCallback(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, fetchNextPage]);
 
   const usersData = useMemo(() => {
     if (isSuccess) {
@@ -47,27 +61,17 @@ const AllUsers = () => {
     }
   }, [isSuccess, data]);
 
-  const handlePageChange = useCallback(
-    (selectedPage) => {
-      setCurrentPage(selectedPage.selected + 1);
-    },
-    [setCurrentPage]
-  );
-
   return (
     <Row>
       <Col lg={6}>
-        {isSuccess && usersData.length && (
+        {isSuccess && usersData?.length > 0 && (
           <>
-            <UsersTable usersData={usersData} />
-            <ReactPaginate
-              previousLabel="Previous"
-              nextLabel="Next"
-              breakLabel="..."
-              pageCount={usersData.at(0).totalPages}
-              onPageChange={handlePageChange}
-              containerClassName="pagination"
-              activeClassName="active"
+            <UsersTable usersData={usersData}/>
+            <Paginate 
+              totalPages={usersData[0]?.totalPages} 
+              fetchThePrevPage={fetchThePrevPage} 
+              setTheCurrentPage={setCurrentPage} 
+              fetchTheNextPage={fetchTheNextPage}
             />
           </>
         )}
