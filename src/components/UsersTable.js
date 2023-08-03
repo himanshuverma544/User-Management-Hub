@@ -7,25 +7,31 @@ import { addAdminUser } from "../redux/slices/admins";
 
 import { Button } from "reactstrap";
 
+
 const UsersTable = ({ usersData }) => {
-  const btnNode = useRef(null);
+
+
   const dispatch = useDispatch();
+  const btnNodes = useRef({});
+
 
   const handleDefault = useCallback(
     (defaultUserObj, btnEle) => {
       dispatch(addDefaultUser(defaultUserObj));
-      btnEle.disabled = true;
+      // btnEle.disabled = true;
     },
     [dispatch]
   );
 
+
   const handleAdmin = useCallback(
     (adminUserObj, btnEle) => {
       dispatch(addAdminUser(adminUserObj));
-      btnEle.disabled = true;
+      // btnEle.disabled = true;
     },
     [dispatch]
   );
+
 
   return (
     <table border="1">
@@ -47,7 +53,7 @@ const UsersTable = ({ usersData }) => {
               <td>
                 <img
                   src={userData.avatar}
-                  alt={`Avatar of ${userData.firstName}`}
+                  alt={`Avatar of ${userData.first_name}`}
                 />
               </td>
               <td>{userData.first_name}</td>
@@ -55,24 +61,25 @@ const UsersTable = ({ usersData }) => {
               <td>{userData.email}</td>
               <td>
                 <Button
-                  innerRef={btnNode}
+                  innerRef={btnNodeRef => btnNodes.current[`default-${userData.id}`] = btnNodeRef}
                   className={`default-btn-${userData.id}`}
                   onClick={() =>
                     handleDefault(
                       userData,
-                      document.querySelector(`.default-btn-${userData.id}`)
+                      btnNodes.current[`default-${userData.id}`]
                     )
                   }
                 >
                   Default
                 </Button>
+                {console.log()}
                 <Button
+                  innerRef={btnNodeRef => btnNodes.current[`admin-${userData.id}`] = btnNodeRef}
                   className={`admin-btn-${userData.id}`}
-                  data-id={userData.id}
                   onClick={() =>
                     handleAdmin(
                       userData,
-                      document.querySelector(`.admin-btn-${userData.id}`)
+                      btnNodes.current[`admin-${userData.id}`]
                     )
                   }
                 >
@@ -86,5 +93,6 @@ const UsersTable = ({ usersData }) => {
     </table>
   );
 };
+
 
 export default UsersTable;
