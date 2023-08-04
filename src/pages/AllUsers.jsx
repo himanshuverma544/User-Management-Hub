@@ -59,7 +59,7 @@ const AllUsers = () => {
     if (isSuccess) {
       return data?.pages;
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data?.pages]);
 
   return (
     <Row>
@@ -67,10 +67,10 @@ const AllUsers = () => {
         {isSuccess && usersData?.length > 0 && (
           <>
             <UsersTable usersData={usersData}/>
-            <Paginate 
-              totalPages={usersData[0]?.totalPages} 
-              fetchThePrevPage={fetchThePrevPage} 
-              setTheCurrentPage={setCurrentPage} 
+            <Paginate
+              totalPages={usersData[0]?.totalPages}
+              fetchThePrevPage={fetchThePrevPage}
+              setTheCurrentPage={setCurrentPage}
               fetchTheNextPage={fetchTheNextPage}
             />
           </>
