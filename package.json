@@ -1,13 +1,19 @@
 {
   "name": "user-management-hub",
-  "version": "1.0.0",
   "private": true,
+  "version": "1.0.0",
+  "type": "module",
   "description": "",
   "keywords": [],
   "homepage": "https://himanshuverma544.github.io/User-Management-Hub",
-  "main": "src/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@reduxjs/toolkit": "1.9.3",
     "axios": "1.3.4",
     "bootstrap": "5.2.3",
@@ -17,16 +23,12 @@
     "react-query": "3.39.3",
     "react-redux": "8.0.5",
     "react-router-dom": "6.10.0",
-    "react-scripts": "5.0.1",
     "reactstrap": "9.1.8"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.4",
+    "vite": "^4.4.8",
+    "vite-plugin-svgr": "^3.2.0"
   },
   "eslintConfig": {
     "extends": [
