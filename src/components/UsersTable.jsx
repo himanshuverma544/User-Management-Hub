@@ -46,49 +46,46 @@ const UsersTable = ({ usersData }) => {
         </tr>
       </thead>
       <tbody>
-        {usersData.map((userDataObj) => {
-          return userDataObj.data.map((userData) => (
-            <tr key={userData.id}>
-              <td>{userData.id}</td>
-              <td>
-                <img
-                  src={userData.avatar}
-                  alt={`Avatar of ${userData.first_name}`}
-                />
-              </td>
-              <td>{userData.first_name}</td>
-              <td>{userData.last_name}</td>
-              <td>{userData.email}</td>
-              <td>
-                <Button
-                  innerRef={btnNodeRef => btnNodes.current[`default-${userData.id}`] = btnNodeRef}
-                  className={`default-btn-${userData.id}`}
-                  onClick={() =>
-                    handleDefault(
-                      userData,
-                      btnNodes.current[`default-${userData.id}`]
-                    )
-                  }
-                >
-                  Default
-                </Button>
-                {console.log()}
-                <Button
-                  innerRef={btnNodeRef => btnNodes.current[`admin-${userData.id}`] = btnNodeRef}
-                  className={`admin-btn-${userData.id}`}
-                  onClick={() =>
-                    handleAdmin(
-                      userData,
-                      btnNodes.current[`admin-${userData.id}`]
-                    )
-                  }
-                >
-                  Admin
-                </Button>
-              </td>
-            </tr>
-          ));
-        })}
+        {usersData.map((userData) => (
+          <tr key={userData.id}>
+            <td>{userData.id}</td>
+            <td>
+              <img
+                src={userData.avatar}
+                alt={`Avatar of ${userData.first_name}`}
+              />
+            </td>
+            <td>{userData.first_name}</td>
+            <td>{userData.last_name}</td>
+            <td>{userData.email}</td>
+            <td>
+              <Button
+                innerRef={btnNodeRef => btnNodes.current[`default-${userData.id}`] = btnNodeRef}
+                className={`default-btn-${userData.id}`}
+                onClick={() =>
+                  handleDefault(
+                    userData,
+                    btnNodes.current[`default-${userData.id}`]
+                  )
+                }
+              >
+                Default
+              </Button>
+              <Button
+                innerRef={btnNodeRef => btnNodes.current[`admin-${userData.id}`] = btnNodeRef}
+                className={`admin-btn-${userData.id}`}
+                onClick={() =>
+                  handleAdmin(
+                    userData,
+                    btnNodes.current[`admin-${userData.id}`]
+                  )
+                }
+              >
+                Admin
+              </Button>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
