@@ -1,16 +1,21 @@
 import { useState, useCallback, useMemo } from "react";
 
 import Axios from "axios";
-import { useInfiniteQuery } from "react-query";
+import { useQuery } from "react-query";
 
 import { Row, Col } from "reactstrap";
+
+import { FIRST_PAGE } from "../constants";
 
 import UsersTable from "../components/UsersTable";
 import Paginate from "../components/Paginate";
 import UsersDivision from "../components/UsersDivision";
 
+
 const AllUsers = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
+
 
   const fetchUsers = useCallback(async (pageParam) => {
     const URL = "https://reqres.in/api/users";
@@ -20,7 +25,7 @@ const AllUsers = () => {
         page: pageParam
       }
     });
-
+    
     return {
       data: data.data,
       currPage: pageParam,
@@ -31,47 +36,34 @@ const AllUsers = () => {
   const {
     data,
     isSuccess,
-    hasPreviousPage,
-    fetchPreviousPage,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+    error,
+    isError
+  } = useQuery({
     queryKey: ["users", currentPage],
     queryFn: ({ pageParam = currentPage }) => fetchUsers(pageParam),
-    getPreviousPageParam: lastPage => !lastPage.data.length ? undefined : lastPage.currPage - 1,
-    getNextPageParam: lastPage => lastPage.data.length ? lastPage.currPage + 1 : undefined
   });
 
-  const fetchThePrevPage = useCallback(() => {
-    if (hasPreviousPage) {
-      fetchPreviousPage();
-    }
-  }, [hasPreviousPage, fetchPreviousPage]);
-
-  const fetchTheNextPage = useCallback(() => {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, fetchNextPage]);
-
+  if (isError) {
+    console.log(error);
+  }
+  
   const usersData = useMemo(() => {
     if (isSuccess) {
-      return data?.pages;
+      return data;
     }
-  }, [isSuccess, data?.pages]);
+  }, [isSuccess, data]);
+
 
   return (
     <Row>
       <Col lg={6}>
-        {isSuccess && usersData?.length > 0 && (
+        {isSuccess && usersData?.data.length > 0 && (
           <>
-            <UsersTable usersData={usersData}/>
+            <UsersTable usersData={usersData?.data}/>
             <Paginate
-              totalPages={usersData[0]?.totalPages}
-              fetchThePrevPage={fetchThePrevPage}
-              setTheCurrentPage={setCurrentPage}
-              fetchTheNextPage={fetchTheNextPage}
+              dataCurrentPage={usersData?.currPage}
+              setCurrentPage={setCurrentPage}
+              totalPages={usersData?.totalPages}
             />
           </>
         )}
