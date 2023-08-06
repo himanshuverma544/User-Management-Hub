@@ -14,11 +14,12 @@ import UsersDivision from "../components/UsersDivision";
 
 const AllUsers = () => {
 
+  
   const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
 
-
   const fetchUsers = useCallback(async (pageParam) => {
-    const URL = "https://reqres.in/api/users";
+
+    const URL = import.meta.env.VITE_USERS_API_URL;
 
     const { data } = await Axios.get(URL, {
       params: {
