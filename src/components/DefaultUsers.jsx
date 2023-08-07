@@ -4,7 +4,9 @@ import { Row } from "reactstrap";
 
 import GridView from "./GridView";
 
+
 const DefaultUsers = () => {
+
   const defaultUsers = useSelector((state) => state.defaultUsersReducer);
 
   return (

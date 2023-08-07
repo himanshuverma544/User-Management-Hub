@@ -7,7 +7,6 @@ import { FIRST_PAGE } from "../constants";
 
 const ThePaginate = ({ dataCurrentPage, setCurrentPage, totalPages: LAST_PAGE }) => {
 
-
   const atFirstPage = useMemo(() => 
     dataCurrentPage === FIRST_PAGE, 
   [dataCurrentPage]);
