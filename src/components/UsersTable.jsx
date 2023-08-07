@@ -1,37 +1,58 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useContext } from "react";
+
+import { usersTableContext } from "../global-context-API/context";
+import { storeData } from "../global-context-API/action.creators";
 
 import { useDispatch } from "react-redux";
 
-import { addDefaultUser } from "../redux/slices/users";
-import { addAdminUser } from "../redux/slices/admins";
+import { addDefaultUser } from "../redux/slices/defaultUsers";
+import { addAdminUser } from "../redux/slices/adminUsers";
 
 import { Button } from "reactstrap";
+
+import { DEFAULT_BTN_NODE, ADMIN_BTN_NODE } from "../constants";
 
 
 const UsersTable = ({ usersData }) => {
 
+  const { dispatch: usersTableDispatch } = useContext(usersTableContext);
 
   const dispatch = useDispatch();
   const btnNodes = useRef({});
 
+  
+  const handleDefault = useCallback((defaultUserObj, defaultBtnNode, adminBtnNode) => {
 
-  const handleDefault = useCallback(
-    (defaultUserObj, btnEle) => {
       dispatch(addDefaultUser(defaultUserObj));
-      // btnEle.disabled = true;
-    },
-    [dispatch]
-  );
+
+      defaultBtnNode.disabled = true;
+      adminBtnNode.style.display = "none";
+
+      const { id } = defaultUserObj;
+
+      usersTableDispatch(storeData({
+        [`${DEFAULT_BTN_NODE}${id}`]: defaultBtnNode, 
+        [`${ADMIN_BTN_NODE}${id}`]: adminBtnNode
+      }, "nodes"));
+
+  }, [dispatch, usersTableDispatch]);
 
 
-  const handleAdmin = useCallback(
-    (adminUserObj, btnEle) => {
+  const handleAdmin = useCallback((adminUserObj, adminBtnNode, defaultBtnNode) => {
+
       dispatch(addAdminUser(adminUserObj));
-      // btnEle.disabled = true;
-    },
-    [dispatch]
-  );
 
+      adminBtnNode.disabled = true;
+      defaultBtnNode.style.display = "none";
+
+      const { id } = adminUserObj;
+
+      usersTableDispatch(storeData({
+        [`${ADMIN_BTN_NODE}${id}`]: adminBtnNode, 
+        [`${DEFAULT_BTN_NODE}${id}`]: defaultBtnNode
+      }, "nodes"));
+
+    }, [dispatch, usersTableDispatch]);
 
   return (
     <table border="1">
@@ -65,7 +86,8 @@ const UsersTable = ({ usersData }) => {
                 onClick={() =>
                   handleDefault(
                     userData,
-                    btnNodes.current[`default-${userData.id}`]
+                    btnNodes.current[`default-${userData.id}`],
+                    btnNodes.current[`admin-${userData.id}`]
                   )
                 }
               >
@@ -77,7 +99,8 @@ const UsersTable = ({ usersData }) => {
                 onClick={() =>
                   handleAdmin(
                     userData,
-                    btnNodes.current[`admin-${userData.id}`]
+                    btnNodes.current[`admin-${userData.id}`],
+                    btnNodes.current[`default-${userData.id}`]
                   )
                 }
               >
@@ -90,6 +113,5 @@ const UsersTable = ({ usersData }) => {
     </table>
   );
 };
-
 
 export default UsersTable;
