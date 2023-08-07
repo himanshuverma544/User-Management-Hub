@@ -13,7 +13,6 @@ import UsersDivision from "../components/UsersDivision";
 
 
 const AllUsers = () => {
-
   
   const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
 
@@ -34,12 +33,7 @@ const AllUsers = () => {
     };
   }, []);
 
-  const {
-    data,
-    isSuccess,
-    error,
-    isError
-  } = useQuery({
+  const { data, isSuccess, error, isError } = useQuery({
     queryKey: ["users", currentPage],
     queryFn: ({ pageParam = currentPage }) => fetchUsers(pageParam),
   });
@@ -54,27 +48,26 @@ const AllUsers = () => {
     }
   }, [isSuccess, data]);
 
-
   return (
-    <Row>
-      <Col lg={6}>
-        {isSuccess && usersData?.data.length > 0 && (
-          <>
+    isSuccess && usersData?.data.length > 0 && (
+      <>
+        <Row>
+          <Col lg={6}>
             <UsersTable usersData={usersData?.data}/>
             <Paginate
               dataCurrentPage={usersData?.currPage}
               setCurrentPage={setCurrentPage}
               totalPages={usersData?.totalPages}
             />
-          </>
-        )}
-      </Col>
+          </Col>
 
-      <Col lg={6}>
-        <UsersDivision />
-      </Col>
-    </Row>
+          <Col lg={6}>
+            <UsersDivision />
+          </Col>
+        </Row>
+      </>
+    )
   );
-};
+}
 
 export default AllUsers;
