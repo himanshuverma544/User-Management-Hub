@@ -1,56 +1,74 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+
+import { usersTableContext } from "../global-context-API/context";
 
 import { useDispatch } from "react-redux";
 
-import { removeDefaultUser } from "../redux/slices/users";
-import { removeAdminUser } from "../redux/slices/admins";
+import { removeDefaultUser } from "../redux/slices/defaultUsers";
+import { removeAdminUser } from "../redux/slices/adminUsers";
 
 import { Col, Card, CardTitle, CardText, Button } from "reactstrap";
 
+import { DEFAULT_BTN_NODE, ADMIN_BTN_NODE } from "../constants";
+
+
 const GridView = ({ userClassName, users, usersType }) => {
+
+  const { data: { nodes, triggered } } = useContext(usersTableContext);
+
   const dispatch = useDispatch();
 
-  const handleRemoveUser = useCallback(
-    (userID) => {
+
+  const handleRemoveUser = useCallback(userID => {
+
       switch (usersType) {
+
         case "Defaults":
           dispatch(removeDefaultUser({ id: userID }));
+          nodes[`${DEFAULT_BTN_NODE}${userID}`].disabled = false;
+          nodes[`${ADMIN_BTN_NODE}${userID}`].style.display = "block";
           break;
 
         case "Admins":
           dispatch(removeAdminUser({ id: userID }));
+          nodes[`${ADMIN_BTN_NODE}${userID}`].disabled = false;
+          nodes[`${DEFAULT_BTN_NODE}${userID}`].style.display = "block";
           break;
 
         default:
           console.log("Something's Wrong");
       }
     },
-    [usersType, dispatch]
+    [usersType, nodes, dispatch]
   );
 
   return (
     <>
-      <h6>{usersType}</h6>
-      <Col lg={3}>
-        {users.map((user) => (
-          <Card key={user.id} className={`${userClassName}-card`}>
-            <img
-              className={`${userClassName}-avatar`}
-              src={user.avatar}
-              alt={`Avatar of ${user.firstName}`}
-            />
-            <CardTitle className={`${userClassName}-name`}>
-              {`${user.first_name} ${user.last_name}`}
-            </CardTitle>
-            <CardText className={`${userClassName}-email`}>
-              {user.email}
-            </CardText>
-            <Button onClick={() => handleRemoveUser(user.id)}>
-              Remove User
-            </Button>
-          </Card>
-        ))}
-      </Col>
+      {triggered && 
+        <>
+          <h6>{usersType}</h6>
+          <Col lg={3}>
+            {users.map((user) => (
+              <Card key={user.id} className={`${userClassName}-card`}>
+                <img
+                  className={`${userClassName}-avatar`}
+                  src={user.avatar}
+                  alt={`Avatar of ${user.firstName}`}
+                />
+                <CardTitle className={`${userClassName}-name`}>
+                  {`${user.first_name} ${user.last_name}`}
+                </CardTitle>
+                <CardText className={`${userClassName}-email`}>
+                  {user.email}
+                </CardText>
+                <Button onClick={() => handleRemoveUser(user.id)}>
+                  Remove User
+                </Button>
+              </Card>
+            ))}
+          </Col>
+        </>
+      }
     </>
   );
 };
