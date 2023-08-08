@@ -1,4 +1,4 @@
-import { STORE_DATA } from "./action.types";
+import { STORE_DATA, REMOVE_DATA } from "./action.types";
 
 const dataReducer = (state, action) => {
   
@@ -15,6 +15,9 @@ const dataReducer = (state, action) => {
         },
         triggered: true
       }
+    
+    case REMOVE_DATA:
+      return state;
 
     default:
       return state;
