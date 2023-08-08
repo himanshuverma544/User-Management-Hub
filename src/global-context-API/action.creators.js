@@ -1,10 +1,11 @@
-import { STORE_DATA, INVALID_TYPE_OF_DATA } from "./action.types";
+import { STORE_DATA, REMOVE_DATA, INVALID_TYPE_OF_DATA } from "./action.types";
+
 
 const storeData = (data, typeOfData) => {
 
   let actionType = INVALID_TYPE_OF_DATA;
 
-  const dataAllowed = ["states", "nodes", "objects", "arrays", "refVars", "vars"];
+  const dataAllowed = ["states", "nodes", "objects", "arrays", "sets", "maps", "refVars", "vars"];
 
   if (typeof data === "object" && typeof typeOfData === "string") {
     for (let data of dataAllowed) {
@@ -23,5 +24,11 @@ const storeData = (data, typeOfData) => {
     }
   }
 };
+
+
+const removeData = () => {
+
+}
+
 
 export { storeData };
