@@ -4,6 +4,9 @@ import svgr from 'vite-plugin-svgr';
 import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({
+
+  base: "/User-Management-Hub",
+
   plugins: [
     react(),
 
