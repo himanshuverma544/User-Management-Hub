@@ -1,4 +1,4 @@
-import { useRef, useCallback, useContext } from "react";
+import { useRef, useCallback, useContext, useMemo } from "react";
 
 import { usersTableContext } from "../global-context-API/context";
 import { storeData } from "../global-context-API/action.creators";
@@ -15,44 +15,52 @@ import { DEFAULT_BTN_NODE, ADMIN_BTN_NODE } from "../constants";
 
 const UsersTable = ({ usersData }) => {
 
-  const { dispatch: usersTableDispatch } = useContext(usersTableContext);
+  const { data: { nodes }, dispatch: contextDispatch } = useContext(usersTableContext);
 
-  const dispatch = useDispatch();
+  const reduxDispatch = useDispatch();
   const btnNodes = useRef({});
 
   
   const handleDefault = useCallback((defaultUserObj, defaultBtnNode, adminBtnNode) => {
 
-      dispatch(addDefaultUser(defaultUserObj));
+      reduxDispatch(addDefaultUser(defaultUserObj));
 
       defaultBtnNode.disabled = true;
       adminBtnNode.style.display = "none";
 
       const { id } = defaultUserObj;
 
-      usersTableDispatch(storeData({
-        [`${DEFAULT_BTN_NODE}${id}`]: defaultBtnNode, 
-        [`${ADMIN_BTN_NODE}${id}`]: adminBtnNode
+      contextDispatch(storeData({
+        [`${DEFAULT_BTN_NODE}${id}`]: { id, defaultBtnNode }, 
+        [`${ADMIN_BTN_NODE}${id}`]: { id, adminBtnNode }
       }, "nodes"));
 
-  }, [dispatch, usersTableDispatch]);
+  }, [reduxDispatch, contextDispatch]);
 
 
   const handleAdmin = useCallback((adminUserObj, adminBtnNode, defaultBtnNode) => {
 
-      dispatch(addAdminUser(adminUserObj));
+      reduxDispatch(addAdminUser(adminUserObj));
 
       adminBtnNode.disabled = true;
       defaultBtnNode.style.display = "none";
 
       const { id } = adminUserObj;
 
-      usersTableDispatch(storeData({
-        [`${ADMIN_BTN_NODE}${id}`]: adminBtnNode, 
-        [`${DEFAULT_BTN_NODE}${id}`]: defaultBtnNode
+      contextDispatch(storeData({
+        [`${ADMIN_BTN_NODE}${id}`]: { id, adminBtnNode }, 
+        [`${DEFAULT_BTN_NODE}${id}`]: { id, defaultBtnNode }
       }, "nodes"));
 
-    }, [dispatch, usersTableDispatch]);
+    }, [reduxDispatch, contextDispatch]);
+
+
+    // const contextBtnNodesIdsSet = useMemo(() => {
+    //   if (nodes) {
+    //    return new Set(Object.values(nodes).map(contextBtnObj => console.log(contextBtnObj)))
+    //   }
+    //   return new Set();
+    // }, [nodes]);
 
   return (
     <table border="1">
@@ -80,9 +88,10 @@ const UsersTable = ({ usersData }) => {
             <td>{userData.last_name}</td>
             <td>{userData.email}</td>
             <td>
-              <Button
+              <Button          
                 innerRef={btnNodeRef => btnNodes.current[`default-${userData.id}`] = btnNodeRef}
                 className={`default-btn-${userData.id}`}
+                // disabled={contextBtnNodesIdsSet.has(userData.id)}
                 onClick={() =>
                   handleDefault(
                     userData,
