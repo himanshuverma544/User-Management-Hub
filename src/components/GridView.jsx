@@ -21,18 +21,21 @@ const GridView = ({ userClassName, users, usersType }) => {
 
   const handleRemoveUser = useCallback(userID => {
 
+    const { adminBtnNode } = nodes[`${ADMIN_BTN_NODE}${userID}`];
+    const { defaultBtnNode } = nodes[`${DEFAULT_BTN_NODE}${userID}`];
+
       switch (usersType) {
 
         case "Defaults":
           dispatch(removeDefaultUser({ id: userID }));
-          nodes[`${DEFAULT_BTN_NODE}${userID}`].disabled = false;
-          nodes[`${ADMIN_BTN_NODE}${userID}`].style.display = "block";
+          defaultBtnNode.disabled = false;
+          adminBtnNode.style.display = "block";
           break;
 
         case "Admins":
           dispatch(removeAdminUser({ id: userID }));
-          nodes[`${ADMIN_BTN_NODE}${userID}`].disabled = false;
-          nodes[`${DEFAULT_BTN_NODE}${userID}`].style.display = "block";
+          adminBtnNode.disabled = false;
+          defaultBtnNode.style.display = "block";
           break;
 
         default:
